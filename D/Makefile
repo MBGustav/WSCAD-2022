@@ -1,4 +1,4 @@
-CPUCPP    = gcc
+CPUCPP    = gcc -pg
 CPPFLAGS  = -O3
 DEFS      =  
 INCLUDES  = -I.
@@ -13,3 +13,13 @@ all:
 
 clean:
 	rm bucketsort
+
+profiling:
+	$(CPU_COMPILE_CPP)  bucketsort.c  $(LINK) -o bucketsort
+	./bucketsort < message.txt
+#Profiling file
+	gprof ./bucketsort gmon.out > BenchMark_serial.txt
+
+#profiling dot-scheme
+	gprof2dot BenchMark_serial.txt > BenchMark_serial.dot
+	dot -Tpng -o profile.png BenchMark_serial.dot 
