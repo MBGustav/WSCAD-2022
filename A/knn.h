@@ -1,33 +1,47 @@
-#include <stdio.h>
-#include <stdlib.h>
+
 
 typedef struct {
     float x;
     float y;
+    char label;
 } Point;
 
-typedef struct {
-    char label;
-    int length;
-    Point * points;
-} Group;
 
 void on_error() {
     printf("Invalid input file.\n");
     exit(1);
 }
 
-int parse_number_of_groups() {
-    int n;
-    if (scanf(" n_groups=%d ", &n) != 1) on_error();
+void print_point(Point point){
+    printf("(%.2f,%.2f,%c)\n",point.x, point.y, point.label);
+}
 
+int read_number_of_points(){
+    int n;
+    if(scanf(" n_points=%d \n", &n) != 1) on_error();
     return n;
 }
 
-Point parse_point() {
-    float x, y;
-    if (scanf(" (%f ,%f) ", &x, &y) != 2)  on_error();
+int read_k(){
+    int n;
+    if(scanf(" k=%d \n", &n) != 1) on_error();
+    return n;
+}
 
+Point read_point() {
+    float x, y;
+    char c;
+    if (scanf("(%f,%f,%c)\n", &x, &y,&c) != 3)  on_error();
+    Point point;
+    point.x = x;
+    point.y = y;
+    point.label = c;
+    return point;
+}
+
+Point read_point_no_label() {
+    float x, y;
+    if (fscanf(stdin," (%f ,%f) ", &x, &y) != 2)  on_error();
     Point point;
     point.x = x;
     point.y = y;
@@ -35,36 +49,11 @@ Point parse_point() {
     return point;
 }
 
-Group parse_next_group() {
-    char label; 
-    int length;
-
-    if (scanf(" label=%c ", &label) != 1) on_error();
-    if (scanf(" length=%d ", &length) != 1) on_error();
-
-    Group group;
-    group.label = label;
-    group.length = length;
-    group.points = (Point *) malloc(sizeof(Point) * length);
-
-    for (int i = 0; i < length; i++) {
-        group.points[i] = parse_point();
-    }
-
-    return group;
-}
-
-int parse_k() {
-    int k;
-    if (scanf(" k=%d ", &k) != 1) on_error();
-
-    return k;
-}
-
-float euclidean_distance_no_sqrt (Point a, Point b) {
-    return ((b.x - a.x) * ((b.x - a.x))) + ((b.y - a.y) * (b.y - a.y));
+float euclidean_distance_no_sqrt(Point a, Point b) {
+    return ((b.x - a.x) * ((b.x - a.x)) + ((b.y - a.y) * (b.y - a.y)));
 }
 
 int compare_for_sort(const void *a, const void *b) {
   return *(char*)a - *(char*)b;
 }
+
