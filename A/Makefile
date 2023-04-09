@@ -1,11 +1,11 @@
 CC=gcc
 NVCC=nvcc
 EXEC=knn
-FLAGS = -O3 -DINPUT -Wextra -DNDEBUG 
+FLAGS = -O3 -DINPUT -Wextra # -DNDEBUG 
 
 #CUDA execution 
 GPU_EXEC=$(EXEC)-cuda
-GPU_FLAGS= -DINPUT -DNDEBUG
+GPU_FLAGS= -DINPUT #-DNDEBUG
 
 # openMP execution
 MP_EXEC=$(EXEC)-openMP
@@ -20,6 +20,8 @@ generate_input:
 	$(CC) -o $(INPUT_GEN) $(FLAGS) $(INPUT_GEN).c
 	./$(INPUT_GEN) $(N_POINTS) $(N_LABELS)
 
+build_all: build_gpu_cuda build_cpu_openmp build_cpu_serial
+	@echo "Building Completed"
 
 build_gpu_cuda: 
 	$(NVCC) -o $(GPU_EXEC) $(GPU_FLAGS) $(GPU_EXEC).cu
@@ -28,7 +30,7 @@ build_cpu_openmp:
 	$(CC) -o $(MP_EXEC) $(MP_FLAGS) $(MP_EXEC).c 
 
 build_cpu_serial:
-	$(CC) -o $(EXEC) $(MP_FLAGS) $(EXEC).c 
+	$(CC) -o $(EXEC) $(FLAGS) $(EXEC).c 
 
 
 run_gpu_cuda: build_gpu_cuda
