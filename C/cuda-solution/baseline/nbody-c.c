@@ -26,12 +26,6 @@ typedef struct {
 } Body_int;
 
 
-inline void debugMode(){
-  #ifndef ONLINE_JUDGE
-  freopen("input.txt", "r", stdin);
-  // freopen("output.txt", "w", stdout);
-  #endif //ONLINE_JUDGE
-}
 /*
  * Compute the gravitational impact among all pairs of bodies in 
  * the system.
@@ -98,7 +92,6 @@ void write_dataset(const int nbodies, Body *bodies, char *fname) {
 
 int main(int argc,char **argv) {
 
-  debugMode();
 
   char file_cpu[] = "output-c.txt";
   int nbodies;

@@ -13,7 +13,7 @@ int main(int argc, char **argv){
 	FILE *fp;
 	int nbodies;
 	if (argc <= 1) {
-		printf ("ERROR: ./input-generator <filename> \n");
+		printf ("ERROR: ./input-generator <n_bodies> \n");
 		return 1;
 	}
 
