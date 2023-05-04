@@ -79,6 +79,7 @@ int main(int argc,char **argv) {
 	// debugMode();	
 	char file_gpu[] = "output-cuda_v1.txt";
 	int nbodies;
+	
 	fscanf(stdin,"%d",&(nbodies));
 
 	Body *bodies = read_dataset(nbodies);

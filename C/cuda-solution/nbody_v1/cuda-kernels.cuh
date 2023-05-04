@@ -71,22 +71,33 @@ void Nbody_wrapper(Body *h_bodies, int nbodies, int num_iter){
     const int NThreads = 32;
     const int Blocks = 80 * 32;
     const int sizeof_bodies = sizeof(float)* nbodies; 
-
+    Timer T;
+    Timer OverAll;
     Body *d_bodies, *result;
+    
+    T.start();OverAll.start();
 
     cudaMallocHost(&result, sizeof_bodies);
     cudaMalloc    (&d_bodies, sizeof_bodies);
     check_last_error();
+    T.stop("Memory Allocation");
     //copy bodies to   GPU
+    T.start();
     cudaMemcpy(d_bodies, h_bodies, sizeof_bodies, cudaMemcpyHostToDevice);
     check_last_error();
-
+    T.stop("Memory Copy");
+    T.start();
     for(int iter=0; iter < num_iter; iter++)
         NbodyForceGPU<<<Blocks,NThreads>>>(d_bodies, DT, nbodies);
     check_last_error();
+    T.stop("Execution Time");
     //Copy back to Host
+    T.start();
     cudaMemcpy(result, d_bodies, sizeof_bodies, cudaMemcpyHostToHost);
     check_last_error();
+    T.stop("Memory Allocation");
+
+    OverAll.stop("Execução Total do Kernel");
 }
 
 
