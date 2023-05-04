@@ -133,7 +133,7 @@ int main(int argc,char **argv) {
 
 	debugMode();
 	
-	char file_gpu[] = "output-cuda.txt";
+	char file_gpu[] = "output-cuda_v0.txt";
 	int nbodies;
 	fscanf(stdin,"%d",&(nbodies));
 
