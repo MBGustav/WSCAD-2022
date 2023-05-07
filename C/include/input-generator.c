@@ -23,16 +23,18 @@ int main(int argc, char **argv){
 	fprintf(fp, "%d\n", nbodies);
 	Body *p = (Body*)malloc(nbodies*sizeof(Body));
 	for(int i = 0; i < nbodies; i++){
-		p[i].x  =(float) (rand() %100)*0.8; 
-		p[i].y  =(float) (rand() %100)*0.8; 
-		p[i].z  =(float) (rand() %100)*0.8; 
-		p[i].vx =(float) (rand() %100)*0.8; 
-		p[i].vy =(float) (rand() %100)*0.8; 
-		p[i].vz =(float) (rand() %100)*0.8; 
+		p[i].x  =(float) (rand() %1000); 
+		p[i].y  =(float) (rand() %1000); 
+		p[i].z  =(float) (rand() %1000); 
+		p[i].vx =(float) (rand() %1000); 
+		p[i].vy =(float) (rand() %1000); 
+		p[i].vz =(float) (rand() %1000); 
 	    fprintf(fp, "%f %f %f %f %f %f\n",p[i].x,  p[i].y,  p[i].z, 
                                             p[i].vx, p[i].vy, p[i].vz);
    }
    fclose(fp);
+
+   printf("\nArquivo Gerado com %i Elementos\n", nbodies);
   
    return(0);
 }

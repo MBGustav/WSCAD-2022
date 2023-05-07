@@ -2,14 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-
+#include <omp.h>
 
 #define N_ITER 10 // number of simulation iterations
 #define DT 0.01f // time step
 #define SOFTENING 1e-9f // to avoid zero divisors
-#define EPSILON (0.000005f)
-#define N_THREADS 32
-#define FLOAT_EQ(X,Y)( (fabs((X) - (Y)) <= EPSILON) ? 1 : 0)
 
 /*
  * Each body holds coordinate positions (i.e., x, y, and z) and
@@ -33,12 +30,14 @@ typedef struct {
 
 void body_force(Body *p, float dt, int n) {
   //Big-O --> n^2
-  for (int i = 0; i < n; ++i) {
+  int i,j;
+  #pragma omp parallel for private(i,j)
+  for (i = 0; i < n; ++i) {
     float fx = 0.0f; 
     float fy = 0.0f; 
     float fz = 0.0f;
 
-    for (int j = 0; j < n; j++) {
+    for (j = 0; j < n; j++) {
       float dx = p[j].x - p[i].x;
       float dy = p[j].y - p[i].y;
       float dz = p[j].z - p[i].z;
@@ -92,8 +91,8 @@ void write_dataset(const int nbodies, Body *bodies, char *fname) {
 
 int main(int argc,char **argv) {
 
-
-  char file_cpu[] = "output-c.txt";
+  omp_set_num_threads(8);
+  char file_cpu[] = "output-omp.txt";
   int nbodies;
   fscanf(stdin,"%d",&(nbodies));
 
@@ -105,18 +104,21 @@ int main(int argc,char **argv) {
    * At each simulation iteration, interbody forces are computed,
    * and bodies' positions are integrated.
    */
-
-  for (int iter = 0; iter < N_ITER; iter++) {
+  int iter, i;
+  #pragma omp parallel for private(iter) shared(bodies)
+  for (iter = 0; iter < N_ITER; iter++) {    
     body_force(bodies, DT, nbodies);
-    for (int i = 0; i < nbodies; i++) {
+    for (i = 0; i < nbodies; i++) {
       bodies[i].x += bodies[i].vx * DT;
       bodies[i].y += bodies[i].vy * DT;
       bodies[i].z += bodies[i].vz * DT;
     }
   }
   
+
   write_dataset(nbodies, bodies, file_cpu);
 
+  printf("\nArquivo gerado - %s\n", file_cpu);
   free(bodies);
   
   exit(EXIT_SUCCESS);
